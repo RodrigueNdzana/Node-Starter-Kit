@@ -1,8 +1,10 @@
 // In node.js when you want to use a package in another file you must required it. or import it--- import express from 'express'
+const { response } = require("express");
 const express= require("express");
 
 // To initialize the server, we need to call "the express function". This create an express application to work on 
 const app=express();
+
 
 /* Now we have to start listen to our request ( we use the app.listen() method). The listen method take a "port number and a "callback function  and 
     - Think of a port number as a door. Any request that cane to the server will come via the door
@@ -70,3 +72,31 @@ app.get("/albums/:albumId", (request,response) => {
   (booleanExpression) ? response.status(200).json(booleanExpression)
   : response.status(404).json(`The album will the id: ${albumId} is not found`);
 });
+
+
+// 3.4.2 workshop Adding a new album to the array of albums
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.post("/albums", (request,response,next) => {
+  console.log("post /albums route")
+  console.log(`The album with an id ${request.body.albumId} has been added`);
+  
+  const addedAlbum={
+    "albumId": request.body.albumId,
+    "artistName": request.body.artistName,
+    "collectionName": request.body.collectionName,
+    "artworkUrl100": request.body.artworkUrl100,
+    "releaseDate": request.body.releaseDate,
+    "primaryGenreName": request.body.primaryGenreName,
+    "url": request.body.url
+  }
+  albumsData.push(addedAlbum);
+  response.send(albumsData);
+  next();
+},(request,response) => {
+  console.log("Do you still want to add more album?(Y/N)")
+}
+// , (request,response) => {
+//   response.end();
+// }
+);
